@@ -1,0 +1,98 @@
+  /* --------------------  rexx procedure  -------------------- *
+  | Name:      zigichk                                         |
+  |                                                            |
+  | Function:  Check for an update to ZIGI                     |
+  |                                                            |
+  | Syntax:    %zigichk                                        |
+  |                                                            |
+  | Dependencies: Requires curl                                |
+  |                                                            |
+  | Author:    Lionel B. Dyck                                  |
+  |                                                            |
+  | History:  (most recent on top)                             |
+  |            2026/07/11 LBD - Clean up                       |
+  |            2026/06/27 LBD - Creation                       |
+  | ---------------------------------------------------------- |
+  |    ZIGI - the z/OS ISPF Git Interface                      |
+  |    Copyright (C) 2026 - Henri Kuiper and Lionel Dyck       |
+  |                                                            |
+  |    This program is free software: you can redistribute it  |
+  |    and/or modify it under the terms of the GNU General     |
+  |    Public License as published by the Free Software        |
+  |    Foundation, either version 3 of the License, or (at     |
+  |    your option) any later version.                         |
+  |                                                            |
+  |    This program is distributed in the hope that it will be |
+  |    useful, but WITHOUT ANY WARRANTY; without even the      |
+  |    implied warranty of MERCHANTABILITY or FITNESS FOR A    |
+  |    PARTICULAR PURPOSE.  See the GNU General Public License |
+  |    for more details.                                       |
+  |                                                            |
+  |    You should have received a copy of the GNU General      |
+  |    Public License along with this program.  If not, see    |
+  |    <https://www.gnu.org/licenses/>.                        |
+  * ---------------------------------------------------------- */
+
+  /* ---------------------------------------- *
+  | Get the currently active version of zigi |
+  * ---------------------------------------- */
+  current_version = zigiver()
+
+  /* ------------------------------- *
+  | define the bpxwunix environment |
+  * ------------------------------- */
+  user = userid()
+  address syscall ,
+    'getpwnam (user) pw.'
+  home = pw.pw_dir
+  env.0 = 1
+  env.1 = 'HOME='home
+
+  /* ------------------------------------ *
+  | Define initial ISPF message variable |
+  * ------------------------------------ */
+  zerrhm   = 'zigih000'
+  zerralrm = 'NO'
+  zerrtp   = 'NOTIFY'
+  zerrsm = ''
+
+  /* ----------------------------------------------------- *
+  | issue the curl command to get the most recent version |
+  | of zigi from github.com/zigi/zigi                     |
+  * ----------------------------------------------------- */
+  cmd = "curl -s -L" ,
+    "https://raw.githubusercontent.com/zigi/zigi/master/ZIGI.EXEC/ZIGIVER"
+  x = bpxwunix(cmd,,s.,e.,env.,1)
+
+  /* ------------------ *
+  | Check for 'return' |
+  * ------------------ */
+  c = 0
+  do i = 1 to s.0
+    if wordpos('RETURN',translate(s.i)) > 0
+    then do
+      c = i
+      leave
+    end
+    end
+    if c = 0 then do
+      zerrlm = 'The ZIGI version check was unable to proceed as it' ,
+        'was unable to connect to the GitHub repository.'
+      Address ispexec 'setmsg msg(isrz003)'
+      exit 4
+    end
+
+  /* ------------------- *
+  | Now test and report |
+  * ------------------- */
+  parse value s.c with . "'"ver"'"
+  if current_version /= ver then do
+    zerrlm = 'Your current verison of zigi is' current_version ,
+      'with a new version' ver 'available to download and install.'
+    Address ispexec 'setmsg msg(isrz003)'
+  end
+  else do
+    zerrlm = 'You are using the most current production' ,
+      'version of zigi.'
+    Address ispexec 'setmsg msg(isrz003)'
+  end
