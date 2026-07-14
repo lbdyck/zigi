@@ -7,6 +7,28 @@
 This file is created as the RELEASE file and copied into the $CHANGES Panel
 
                              ZIGI Release Notes
+                                Version 3.31
+                                July 14, 2026
+
+
+                         New Features and Functions
+                         --------------------------
+Exec (REXX) Updates:
+* zigi           - Add new CHECK command to the primary table display
+                   to check the GitHub repo for an updated version
+* zigichk        - REXX to do the version update check
+
+Panel Updates:
+* zigiprim       - Add new Help pulldown option CHECK command to the
+                   primary table display to check the GitHub repo
+                   for an updated version
+* zigih040       - Update for Check tutorial panel
+* zigih041       - New Check tutorial panel
+* zigih100       - Add new CHeck tutorial option
+
+-----------------------------------------------------------------------------
+
+                             ZIGI Release Notes
                                 Version 3.30
                                 June 9, 2026
 

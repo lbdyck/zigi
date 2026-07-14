@@ -10,7 +10,7 @@
   | Author:    Lionel B. Dyck                                  |
   |                                                            |
   | History:  (most recent on top)                             |
-  |            2026/07/11 LBD - Clean up                       |
+  |            2026/07/14 LBD - Clean up                       |
   |            2026/06/27 LBD - Creation                       |
   | ---------------------------------------------------------- |
   |    ZIGI - the z/OS ISPF Git Interface                      |
@@ -36,7 +36,16 @@
   /* ---------------------------------------- *
   | Get the currently active version of zigi |
   * ---------------------------------------- */
-  current_version = zigiver()
+  parse value zigiver() with 'V'v'R'r
+  active_version = v'.'r
+
+  /* ---------------------- *
+   | Setup ISPF Environment |
+   * ---------------------- */
+  Address ISPExec
+  'vget (zckinfo) profile'
+  if zckinfo = ''
+     then zckinfo = 'Never'
 
   /* ------------------------------- *
   | define the bpxwunix environment |
@@ -61,6 +70,7 @@
   | of zigi from github.com/zigi/zigi                     |
   * ----------------------------------------------------- */
   cmd = "curl -s -L" ,
+    "--connect-timeout 5" ,
     "https://raw.githubusercontent.com/zigi/zigi/master/ZIGI.EXEC/ZIGIVER"
   x = bpxwunix(cmd,,s.,e.,env.,1)
 
@@ -78,21 +88,27 @@
     if c = 0 then do
       zerrlm = 'The ZIGI version check was unable to proceed as it' ,
         'was unable to connect to the GitHub repository.'
-      Address ispexec 'setmsg msg(isrz003)'
+      'setmsg msg(isrz003)'
       exit 4
     end
 
   /* ------------------- *
   | Now test and report |
   * ------------------- */
-  parse value s.c with . "'"ver"'"
-  if current_version /= ver then do
-    zerrlm = 'Your current verison of zigi is' current_version ,
-      'with a new version' ver 'available to download and install.'
-    Address ispexec 'setmsg msg(isrz003)'
+  parse value s.c with . "'V"ver"R"rev"'"
+  ver = ver'.'rev
+  if active_version /= ver then do
+    zerrlm = left('Your active verison of zigi is' active_version ,
+      'with a new version' ver 'available to',73),
+      left('download and install.',73) ,
+      'Last checked' zckinfo
+    'setmsg msg(isrz003)'
   end
   else do
-    zerrlm = 'You are using the most current production' ,
-      'version of zigi.'
-    Address ispexec 'setmsg msg(isrz003)'
+    zerrlm = ,
+      left('You are using the most current production version of zigi.',73) ,
+      'Last checked' zckinfo
+    'setmsg msg(isrz003)'
   end
+  zckinfo = date() time()
+  'vput (zckinfo) profile'
