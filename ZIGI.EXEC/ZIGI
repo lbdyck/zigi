@@ -782,7 +782,7 @@
       When abbrev('SORT',word(zcmd,1),2) = 1 then call handle_zigiprim_sort
       When abbrev('SSH',zcmd,2) = 1 then call handle_zigiprim_ssh
       When abbrev('DEBUG',word(zcmd,1),2) = 1 then call handle_debug
-      When abbrev('CHECK',word(zcmd,1),2) = 1 then call handle_check
+      When abbrev('VCHECK',word(zcmd,1),2) = 1 then call handle_vcheck
       Otherwise do
         rc = zigiexit(1 zcmd)
         if rc >= 12 then
@@ -1274,8 +1274,8 @@ init_ispf:
   cdrcnt = 0
   return
 
-Handle_Check:
-  'Select cmd(%zigichk)'
+Handle_VCheck:
+  'Select cmd(%zigivchk)'
   return
 
 Handle_Debug:
@@ -1868,6 +1868,7 @@ Work_With_Repo:
       When abbrev('FLOWEND',zcmd,5)  = 1 then call WWR_handle_flowend
       When zcmd = 'STASHL' then call stash_list
       When abbrev('DEBUG',word(zcmd,1),2) = 1 then call handle_debug
+      When abbrev('VCHECK',word(zcmd,1),2) = 1 then call handle_vcheck
       Otherwise do
         rc = zigiexit(2 zcmd)
         if rc >= 12 then

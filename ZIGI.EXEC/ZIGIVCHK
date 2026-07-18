@@ -1,9 +1,9 @@
   /* --------------------  rexx procedure  -------------------- *
-  | Name:      zigichk                                         |
+  | Name:      zigivchk                                        |
   |                                                            |
   | Function:  Check for an update to ZIGI                     |
   |                                                            |
-  | Syntax:    %zigichk                                        |
+  | Syntax:    %zigivchk                                       |
   |                                                            |
   | Dependencies: Requires curl                                |
   |                                                            |

@@ -8,7 +8,7 @@
 +
                               %Check for Updates+
 +
-+The%CHeck+command on the primary ZIGI repository table will attempt,
++The%VCheck+command on the primary ZIGI repository table will attempt,
 +using curl, to connect to the main ZIGI GitHub repository to determine
 +if there is a new version of ZIGI available.
 +

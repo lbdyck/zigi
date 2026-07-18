@@ -8,23 +8,24 @@ This file is created as the RELEASE file and copied into the $CHANGES Panel
 
                              ZIGI Release Notes
                                 Version 3.31
-                                July 14, 2026
+                                July 18, 2026
 
 
                          New Features and Functions
                          --------------------------
 Exec (REXX) Updates:
-* zigi           - Add new CHECK command to the primary table display
-                   to check the GitHub repo for an updated version
-* zigichk        - REXX to do the version update check
+* zigi           - Add new VCheck command to the primary table display
+                   to VCheck the GitHub repo for an updated version
+* zigivchk       - REXX to do the version update VCheck
 
 Panel Updates:
-* zigiprim       - Add new Help pulldown option CHECK command to the
-                   primary table display to check the GitHub repo
+* zigiprim       - Add new Help pulldown option VCheck command to the
+                   primary table display to VCheck the GitHub repo
                    for an updated version
-* zigih040       - Update for Check tutorial panel
-* zigih041       - New Check tutorial panel
-* zigih100       - Add new CHeck tutorial option
+* zigih040       - Update for VCheck tutorial panel
+* zigih041       - New VCheck tutorial panel
+* zigih100       - Add new VCheck tutorial option
+* zigih200       - Add new VCheck tutorial option
 
 -----------------------------------------------------------------------------
 
